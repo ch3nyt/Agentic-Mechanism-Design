@@ -1,0 +1,19 @@
+# Virtual environment
+venv/
+
+# Environment / secrets
+*.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Output files
+*.png
+*.csv
+
+# Claude memory
+.claude/
