@@ -4,9 +4,11 @@
 
 驗證以下假說：**LLM Agent 在無顯式強化學習演算法的情況下，純粹依靠上下文中的歷史記錄（In-Context RL），是否能自主學習出第一價格拍賣的貝氏納許均衡（BNE）出價策略。**
 
-理論預測：在 $N$ 個 Agent、私人估值 $v \sim U(0, 100)$ 的對稱第一價格拍賣中，BNE 最佳出價為：
+理論預測：在 $N$ 個 Agent、私人估值 $v \sim U(L, H)$ 的對稱第一價格拍賣中，BNE 最佳出價為：
 
-$$b^*(v) = \frac{N-1}{N} \cdot v$$
+$$b^*(v) = L + \frac{N-1}{N} \cdot (v - L)$$
+
+當 $L = 0$ 時即為 $b^*(v) = \frac{N-1}{N} \cdot v$。$L > 0$ 時，均衡出價比例 $b^*(v)/v$ 會隨 $v$ 變動，不是常數。
 
 ---
 
@@ -41,6 +43,8 @@ $$b^*(v) = \frac{N-1}{N} \cdot v$$
 | `MEMORY_WINDOW` | `10` | Agent 記憶體視窗（最近幾輪歷史）|
 | `TEMPERATURE` | `0.7` | LLM 生成溫度 |
 | `RESULTS_FILE` | `results.csv` | 輸出 CSV 檔案名稱 |
+
+上表為 `main.py` 的程式預設值。目前 `api.env` 的設定為 `N_AGENTS=4`、`VALUE_LOW/VALUE_HIGH=50/80`、`MEMORY_WINDOW=50`；`analysis.ipynb` 開頭的 `N_AGENTS`、`VALUE_LOW`、`VALUE_HIGH` 需與 `api.env` 一致。
 
 ---
 
@@ -139,7 +143,7 @@ environment.generate_values()
 
 1. **Bid vs Value 散佈圖（全輪次）** — 點的顏色代表輪次（Viridis 色階），直觀看出隨時間的演化趨勢，並覆蓋 45° 誠實出價線與 BNE 理論線。
 2. **收斂分析（前半段 vs 後半段）** — 將實驗分為早期與晚期，對比散佈圖的集中程度，驗證是否向 BNE 線收斂。
-3. **Bid Ratio 時間序列** — 繪製每輪平均 `bid/value` 比率（含 5 輪滾動平均），觀察是否收斂至 $(N-1)/N$。
+3. **Bid Ratio 時間序列** — 繪製每輪平均 `bid/value` 比率（含 5 輪滾動平均），與每輪的 BNE 平均出價比例比較（$L=0$ 時即 $(N-1)/N$）。
 4. **累積利潤折線圖** — 各 Agent 的累積收益曲線，可比較不同 Persona 的長期表現。
 5. **摘要統計表** — 彙整各 Agent 的平均 bid_ratio、與 BNE 的偏差、勝率、總利潤。
 
