@@ -90,7 +90,10 @@ class AuctionEnvironment:
     def bne_bid(self, value: float) -> float:
         """
         Theoretical Bayesian Nash Equilibrium bid for a symmetric agent
-        in a first-price auction with N bidders and U(0, value_high):
-            b*(v) = (N-1)/N * v
+        in a first-price auction with N bidders and values iid
+        U(value_low, value_high):
+            b*(v) = value_low + (N-1)/N * (v - value_low)
+        This reduces to (N-1)/N * v when value_low = 0.
         """
-        return (self.n_agents - 1) / self.n_agents * value
+        n = self.n_agents
+        return self.value_low + (n - 1) / n * (value - self.value_low)
