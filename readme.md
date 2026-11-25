@@ -1,5 +1,9 @@
 # LLM Multi-Agent Auction Experiment (In-Context RL)
 
+> **In English.** Can LLM agents learn the Bayes–Nash equilibrium (BNE) bid in a symmetric first-price auction from in-context history alone, with no explicit reinforcement-learning algorithm and no weight updates? Each agent sees its private value and its own past rounds (bids, wins, payoffs, winning bids) and is asked for a bid; the auction engine settles each round and the analysis compares bids with the theoretical b\*(v) = L + (N−1)/N · (v − L). The auction rules (`environment.py`) and the agents (`agent.py`) are decoupled, so the mechanism or the model can be swapped independently.
+>
+> **Status:** the simulation sandbox is complete; experiment results are not yet published.
+
 ## 實驗目標
 
 驗證以下假說：**LLM Agent 在無顯式強化學習演算法的情況下，純粹依靠上下文中的歷史記錄（In-Context RL），是否能自主學習出第一價格拍賣的貝氏納許均衡（BNE）出價策略。**
@@ -16,7 +20,7 @@ $$b^*(v) = L + \frac{N-1}{N} \cdot (v - L)$$
 
 ```
 .
-├── api.env           # API 金鑰與實驗參數設定
+├── api.env.example   # 設定檔範本（複製成 api.env 後填入金鑰；api.env 不進版控）
 ├── prompts.py        # System Prompt 與字串模板（文字與邏輯解耦）
 ├── environment.py    # 拍賣機制與結算引擎
 ├── agent.py          # LLM Agent 大腦 + ICRL 記憶體
@@ -29,7 +33,7 @@ $$b^*(v) = L + \frac{N-1}{N} \cdot (v - L)$$
 
 ## 各模組詳細說明
 
-### 1. `api.env` — 設定檔
+### 1. `api.env` — 設定檔（由 `api.env.example` 複製）
 
 集中管理所有可調參數，無需修改程式碼即可調整實驗設定：
 
@@ -159,7 +163,7 @@ pip install openai python-dotenv
 
 ### 設定 API 金鑰
 
-編輯 `api.env`，填入你的 OpenAI API 金鑰：
+把 `api.env.example` 複製成 `api.env`（`cp api.env.example api.env`），再填入你的 OpenAI API 金鑰。`api.env` 已列在 `.gitignore`，不會被提交：
 
 ```
 OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
